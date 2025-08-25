@@ -1,28 +1,35 @@
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local guiCreated = false -- GUI'nin bir kez oluşturulduğunu kontrol eder
+local mainScreenGui
 
 local function createGUI()
-    local ScreenGui = Instance.new("ScreenGui")
-    local DraggableButton = Instance.new("TextButton")
-    local UserInputService = game:GetService("UserInputService")
+    if guiCreated then return end
+    guiCreated = true
 
-    ScreenGui.Name = "Bozkurtqww"
-    ScreenGui.Parent = game.CoreGui
+    mainScreenGui = Instance.new("ScreenGui")
+    mainScreenGui.Name = "Bozkurtqww"
+    mainScreenGui.Parent = game.CoreGui
 
-    DraggableButton.Parent = ScreenGui
-    DraggableButton.BackgroundColor3 = Color3.new(0, 0, 0)
-    DraggableButton.Size = UDim2.new(0, 135, 0, 50)
-    DraggableButton.Position = UDim2.new(0.5, 200, 0.5, -50)
-    DraggableButton.Text = "Bozkurtqww Lag Scr1pt"
-    DraggableButton.TextColor3 = Color3.new(1, 1, 1)
-    DraggableButton.BorderSizePixel = 0
-    DraggableButton.Font = Enum.Font.SourceSans
-    DraggableButton.TextSize = 18
-    DraggableButton.AutoButtonColor = false
+    -- Sahte Lag Button
+    local FakeLagButton = Instance.new("TextButton")
+    FakeLagButton.Parent = mainScreenGui
+    FakeLagButton.BackgroundColor3 = Color3.new(0,0,0)
+    FakeLagButton.Size = UDim2.new(0, 135, 0, 50)
+    FakeLagButton.Position = UDim2.new(0.5, 200, 0.5, -50)
+    FakeLagButton.Text = "Bozkurtqww Lag Scr1pt"
+    FakeLagButton.TextColor3 = Color3.new(1,1,1)
+    FakeLagButton.BorderSizePixel = 0
+    FakeLagButton.Font = Enum.Font.SourceSans
+    FakeLagButton.TextSize = 18
+    FakeLagButton.AutoButtonColor = false
 
-    local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0, 10)
-    UICorner.Parent = DraggableButton
+    local UICorner1 = Instance.new("UICorner")
+    UICorner1.CornerRadius = UDim.new(0, 10)
+    UICorner1.Parent = FakeLagButton
 
     local dragging = false
     local dragInput
@@ -32,14 +39,14 @@ local function createGUI()
 
     local function update(input)
         local delta = input.Position - dragStart
-        DraggableButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        FakeLagButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
 
-    DraggableButton.InputBegan:Connect(function(input)
+    FakeLagButton.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = true
             dragStart = input.Position
-            startPos = DraggableButton.Position
+            startPos = FakeLagButton.Position
 
             input.Changed:Connect(function()
                 if input.UserInputState == Enum.UserInputState.End then
@@ -49,7 +56,7 @@ local function createGUI()
         end
     end)
 
-    DraggableButton.InputChanged:Connect(function(input)
+    FakeLagButton.InputChanged:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
             dragInput = input
         end
@@ -61,12 +68,12 @@ local function createGUI()
         end
     end)
 
-    DraggableButton.MouseButton1Click:Connect(function()
+    FakeLagButton.MouseButton1Click:Connect(function()
         FakeLag = not FakeLag
         if FakeLag then
-            DraggableButton.Text = "Sahte Lag: Aktif"
+            FakeLagButton.Text = "Sahte Lag: Aktif"
         else
-            DraggableButton.Text = "Sahte Lag: Kapalı"
+            FakeLagButton.Text = "Sahte Lag: Kapalı"
         end
     end)
 
@@ -82,97 +89,93 @@ local function createGUI()
             end
         end
     end)()
-end
 
-player.CharacterAdded:Connect(function()
-    if game.CoreGui:FindFirstChild("bozkurtqww") then
-        game.CoreGui.bozkurtqww:Destroy()
+    -- Düşme Button
+    local FallButton = Instance.new("TextButton")
+    FallButton.Parent = mainScreenGui
+    FallButton.BackgroundColor3 = Color3.new(0,0,0)
+    FallButton.Size = UDim2.new(0, 100, 0, 50)
+    FallButton.Position = UDim2.new(0.5, 200, 0.5, 0)
+    FallButton.Text = "Düşme"
+    FallButton.TextColor3 = Color3.new(1,1,1)
+    FallButton.BorderSizePixel = 0
+    FallButton.Font = Enum.Font.SourceSans
+    FallButton.TextSize = 24
+    FallButton.AutoButtonColor = false
+
+    local UICorner2 = Instance.new("UICorner")
+    UICorner2.CornerRadius = UDim.new(0, 10)
+    UICorner2.Parent = FallButton
+
+    local draggingFall = false
+    local dragInputFall
+    local dragStartFall
+    local startPosFall
+    local holdStart = 0
+    local isPlatformStand = false
+    local canStandUp = false
+
+    local function updateFall(input)
+        local delta = input.Position - dragStartFall
+        FallButton.Position = UDim2.new(startPosFall.X.Scale, startPosFall.X.Offset + delta.X, startPosFall.Y.Scale, startPosFall.Y.Offset + delta.Y)
     end
-    createGUI()
-end)
 
-createGUI()
-local ScreenGui = Instance.new("ScreenGui")
-local DraggableButton = Instance.new("TextButton")
-local UserInputService = game:GetService("UserInputService")
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+    FallButton.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            draggingFall = true
+            dragStartFall = input.Position
+            startPosFall = FallButton.Position
+            holdStart = tick()
 
-ScreenGui.Parent = game.CoreGui
-
-DraggableButton.Parent = ScreenGui
-DraggableButton.BackgroundColor3 = Color3.new(0, 0, 0)
-DraggableButton.Size = UDim2.new(0, 100, 0, 50)
-DraggableButton.Position = UDim2.new(0.5, 200, 0.5, 0)
-DraggableButton.Text = "Düşme"
-DraggableButton.TextColor3 = Color3.new(1, 1, 1)
-DraggableButton.BorderSizePixel = 0
-DraggableButton.Font = Enum.Font.SourceSans
-DraggableButton.TextSize = 24
-DraggableButton.AutoButtonColor = false
-
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 10)
-UICorner.Parent = DraggableButton
-
-local dragging = false
-local dragInput
-local dragStart
-local startPos
-local holdStart = 0
-local isPlatformStand = false
-local canStandUp = false
-
-local function update(input)
-    local delta = input.Position - dragStart
-    DraggableButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-end
-
-DraggableButton.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = DraggableButton.Position
-        holdStart = tick()
-
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-DraggableButton.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        dragInput = input
-    end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-    if dragging and input == dragInput then
-        update(input)
-    end
-end)
-
-game:GetService("RunService").RenderStepped:Connect(function()
-    if dragging and (tick() - holdStart) >= 5 then
-        DraggableButton.Visible = false
-    end
-end)
-
-DraggableButton.MouseButton1Click:Connect(function()
-    if player.Character and player.Character:FindFirstChild("Humanoid") then
-        local humanoid = player.Character.Humanoid
-        if not isPlatformStand then
-            humanoid.PlatformStand = true
-            humanoid:Move(Vector3.new(0, -50, 0))
-            canStandUp = true
-            isPlatformStand = true
-        elseif canStandUp then
-            humanoid.PlatformStand = false
-            isPlatformStand = false
-            canStandUp = false
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    draggingFall = false
+                end
+            end)
         end
+    end)
+
+    FallButton.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInputFall = input
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if draggingFall and input == dragInputFall then
+            updateFall(input)
+        end
+    end)
+
+    RunService.RenderStepped:Connect(function()
+        if draggingFall and (tick() - holdStart) >= 5 then
+            FallButton.Visible = false
+        end
+    end)
+
+    FallButton.MouseButton1Click:Connect(function()
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            local humanoid = player.Character.Humanoid
+            if not isPlatformStand then
+                humanoid.PlatformStand = true
+                humanoid:Move(Vector3.new(0, -50, 0))
+                canStandUp = true
+                isPlatformStand = true
+            elseif canStandUp then
+                humanoid.PlatformStand = false
+                isPlatformStand = false
+                canStandUp = false
+            end
+        end
+    end)
+end
+
+-- Karakter yeniden doğduğunda GUI’yi tekrar oluşturma, sadece mevcut GUI’yi kullan
+player.CharacterAdded:Connect(function()
+    if mainScreenGui and mainScreenGui.Parent == nil then
+        mainScreenGui.Parent = game.CoreGui
     end
 end)
+
+-- Başlangıçta GUI’yi oluştur
+createGUI()
